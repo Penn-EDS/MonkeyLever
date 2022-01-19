@@ -51,6 +51,7 @@ float baseResistance = 776.6;       //The units are kΩ. This resistance prevent
                                     //raises resistance floor. It will also be used to measure the resistance of the potentiometer. 
                                     //Its value is determined beforehand.
 float potentiometer = 0.0;          //Variable to store potentiometer resistance.
+float topVoltDiv = 0.0;             //Variable to sum both pot and base resistance to show on the display.
 
 void setup() {
   // put your setup code here, to run once:
@@ -75,8 +76,15 @@ void loop() {
 
   potentiometer = potReading(sourceBitValue,vo2BitValue,touchLeverBitValue); //Get current resistance value of the potentiometer.
 
-  printToOled(thresholdValue, touchLeverBitValue, potentiometer);  //update display
+  topVoltDiv = baseResistance + potentiometer;
 
+  if (touchLeverBitValue <951){
+    printToOled(thresholdValue, touchLeverBitValue, topVoltDiv);  //update display
+  }
+  else{
+    printToOled(thresholdValue, touchLeverBitValue, -1);  //update display
+  }
+  
   if (touchLeverBitValue > thresholdValue){
     digitalWrite(ledPin, LOW); 
     digitalWrite(output, LOW); //When the lever is not touched, the output is low
